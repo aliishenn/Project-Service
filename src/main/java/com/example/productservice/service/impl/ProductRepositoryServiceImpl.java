@@ -2,6 +2,7 @@ package com.example.productservice.service.impl;
 
 import com.example.productservice.enums.Language;
 import com.example.productservice.exception.enums.FriendlyMessageCodes;
+import com.example.productservice.exception.exceptions.ProductAlReadyDeletedException;
 import com.example.productservice.exception.exceptions.ProductNotCreatedException;
 import com.example.productservice.exception.exceptions.ProductNotFoundException;
 import com.example.productservice.repository.entity.Product;
@@ -55,7 +56,13 @@ public class ProductRepositoryServiceImpl implements IProductRepositoryService {
 
     @Override
     public List<Product> getProducts(Language language) {
-        return null;
+        log.debug("[{}][getProduct]",this.getClass().getSimpleName());
+        List<Product> products = productRepository.getAllByDeletedFalse();
+        if (products.isEmpty()) {
+            throw new ProductNotFoundException(language,FriendlyMessageCodes.PRODUCT_NOT_FOUND_EXCEPTION,"Product not found");
+        }
+        log.debug("[{}][getProduct]-> request: {}",this.getClass().getSimpleName(),products);
+        return products;
     }
 
     @Override
@@ -74,6 +81,17 @@ public class ProductRepositoryServiceImpl implements IProductRepositoryService {
 
     @Override
     public Product deleteProduct(Language language, Long productId) {
-        return null;
+        log.debug("[{}][deletedProduct] -> request: {}",this.getClass().getSimpleName(),productId);
+        Product product;
+        try {
+            product = getProduct(language,productId);
+            product.setDeleted(true);
+            product.setProductUpdatedDate(new Date());
+            Product productResponse = productRepository.save(product);
+            log.debug("[{}][deletedProduct] -> request: {}",this.getClass().getSimpleName(),productResponse);
+            return productResponse;
+        }catch (ProductNotFoundException productNotFoundException){
+            throw new ProductAlReadyDeletedException(language,FriendlyMessageCodes.PRODUCT_ALREADY_DELETED,"Product already deleted product id: " + productId);
+        }
     }
 }

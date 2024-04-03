@@ -1,6 +1,7 @@
 package com.example.productservice.exception.handler;
 
 import com.example.productservice.exception.enums.FriendlyMessageCodes;
+import com.example.productservice.exception.exceptions.ProductAlReadyDeletedException;
 import com.example.productservice.exception.exceptions.ProductNotCreatedException;
 import com.example.productservice.exception.exceptions.ProductNotFoundException;
 import com.example.productservice.exception.utils.FriendlyMessageUtils;
@@ -43,5 +44,20 @@ public class GlobalExceptionHandler {
                 .hasError(true)
                 .errorMessages(Collections.singletonList(exception.getMessage()))
                 .build();
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ProductAlReadyDeletedException.class)
+    public InternalApiResponse<String> handleProductAlreadyDeletedException(ProductAlReadyDeletedException exception){
+        return InternalApiResponse.<String>builder()
+                .friendlyMessage(FriendlyMessage.builder()
+                        .title(FriendlyMessageUtils.getFriendlyMessage(exception.getLanguage(),FriendlyMessageCodes.ERROR))
+                        .description(FriendlyMessageUtils.getFriendlyMessage(exception.getLanguage(),exception.getFriendlyMessageCode()))
+                        .build())
+                .httpStatus(HttpStatus.BAD_REQUEST)
+                .hasError(true)
+                .errorMessages(Collections.singletonList(exception.getMessage()))
+                .build();
+
     }
 }
