@@ -9,7 +9,11 @@ info:
   component: Product Service
 
 server:
-  port: 9888
+  port: 9788
+logging:
+  level:
+    root: DEBUG
+
 ---
 spring:
   profiles: localhost

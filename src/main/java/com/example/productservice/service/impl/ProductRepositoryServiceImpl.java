@@ -3,6 +3,7 @@ package com.example.productservice.service.impl;
 import com.example.productservice.enums.Language;
 import com.example.productservice.exception.enums.FriendlyMessageCodes;
 import com.example.productservice.exception.exceptions.ProductNotCreatedException;
+import com.example.productservice.exception.exceptions.ProductNotFoundException;
 import com.example.productservice.repository.entity.Product;
 import com.example.productservice.repository.entity.ProductRepository;
 import com.example.productservice.request.ProductCreateRequest;
@@ -13,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -39,7 +42,14 @@ public class ProductRepositoryServiceImpl implements IProductRepositoryService {
 
     @Override
     public Product getProduct(Language language, Long productId) {
-        return null;
+        log.debug("[{}][getProduct] -> request productId: {}",this.getClass().getSimpleName(),productId);
+        Product product = productRepository.getProductIdAndDeletedFalse(productId);
+        if (Objects.isNull(product)){
+            throw new ProductNotFoundException(language,FriendlyMessageCodes.PRODUCT_NOT_FOUND_EXCEPTION,"Product not found for product id: " + productId);
+
+        }
+        log.debug("[{}][getProduct] -> request: {}",this.getClass().getSimpleName(),product);
+        return product;
     }
 
     @Override
