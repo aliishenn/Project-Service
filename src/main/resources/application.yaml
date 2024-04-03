@@ -28,6 +28,6 @@ spring:
       hibernate:
         default_schema: stock_management
   datasource:
-    url: "jdbc:postgresql://localhost:5432//stock_management"
+    url: "jdbc:postgresql://postgres:5432//example"
     username: postgres
     password: 25473600
