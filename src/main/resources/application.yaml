@@ -16,7 +16,9 @@ logging:
 
 ---
 spring:
-  profiles: localhost
+  config:
+    activate:
+      on-profile: localhost
   cloud:
     config:
       uri: http://localhost:8888
@@ -26,8 +28,8 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     properties:
       hibernate:
-        default_schema: stock_management
+        default_schema: example
   datasource:
-    url: "jdbc:postgresql://postgres:5432//example"
+    url: "jdbc:postgresql://postgres:5432/example"
     username: postgres
     password: 25473600
