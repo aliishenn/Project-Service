@@ -6,7 +6,8 @@ public enum FriendlyMessageCodes implements IFriendlyMessageCode {
     SUCCESS(1002),
     PRODUCT_NOT_CREATED_EXCEPTİON(1500),
     PRODUCT_SUCCESSFULY_CREATED(1501),
-    PRODUCT_NOT_FOUND_EXCEPTION(1502);
+    PRODUCT_NOT_FOUND_EXCEPTION(1502),
+    PRODUCT_SUCCESSFULLY_UPDATED(1503);
     private final int value;
 
     FriendlyMessageCodes(int value){

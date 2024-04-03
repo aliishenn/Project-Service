@@ -5,6 +5,7 @@ import com.example.productservice.exception.enums.FriendlyMessageCodes;
 import com.example.productservice.exception.utils.FriendlyMessageUtils;
 import com.example.productservice.repository.entity.Product;
 import com.example.productservice.request.ProductCreateRequest;
+import com.example.productservice.request.ProductUpdateRequest;
 import com.example.productservice.response.FriendlyMessage;
 import com.example.productservice.response.InternalApiResponse;
 import com.example.productservice.response.ProductReponse;
@@ -48,6 +49,26 @@ class ProductController {
         ProductReponse productReponse = convertProductResponse(product);
         log.debug("[{}][getProduct] -> request: {}",this.getClass().getSimpleName(),productReponse);
         return InternalApiResponse.<ProductReponse>builder()
+                .httpStatus(HttpStatus.OK)
+                .hasError(false)
+                .payload(productReponse)
+                .build();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping(value = "/{language}/update/{productId}")
+    public InternalApiResponse<ProductReponse> updateProduct(@PathVariable("language") Language language,
+                                                             @PathVariable("productId")Long productId,
+                                                             @RequestBody ProductUpdateRequest productUpdateRequest){
+        log.debug("[{}][getProduct] -> request: {} {}",this.getClass().getSimpleName(),productId,productUpdateRequest);
+        Product product = productRepositoryService.updateProduct(language,productId,productUpdateRequest);
+        ProductReponse productReponse = convertProductResponse(product);
+        log.debug("[{}][getProduct] -> request: {} {}",this.getClass().getSimpleName(),productId,productReponse);
+        return InternalApiResponse.<ProductReponse>builder()
+                .friendlyMessage(FriendlyMessage.builder()
+                        .title(FriendlyMessageUtils.getFriendlyMessage(language,FriendlyMessageCodes.SUCCESS))
+                        .description(FriendlyMessageUtils.getFriendlyMessage(language,FriendlyMessageCodes.PRODUCT_SUCCESSFULLY_UPDATED))
+                        .build())
                 .httpStatus(HttpStatus.OK)
                 .hasError(false)
                 .payload(productReponse)
